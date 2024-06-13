@@ -1,0 +1,102 @@
+package food;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.Set;
+import java.util.TreeMap;
+
+public class TreeMapEx {
+    public static void main(String[] args) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        TreeMap<String, LocalDate> map = new TreeMap<>();
+
+        // 유통기한을 관리하고싶은 식료품과 유통기한을 적어주세요.//
+        map.put("cheese", LocalDate.parse("20240712", formatter));
+        map.put("milk", LocalDate.parse("20240620", formatter));
+        map.put("milk2", LocalDate.parse("20240616", formatter));
+        map.put("yogurt", LocalDate.parse("20240624", formatter));
+        map.put("cream", LocalDate.parse("20240730", formatter));
+        map.put("butter", LocalDate.parse("20240918", formatter));
+        map.put("cheese2", LocalDate.parse("20240720", formatter));
+
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("원하는 옵션을 골라주세요!");
+        System.out.println("1. 검색해서 유통기한 찾기");
+        System.out.println("2. 유통기한이 긴 순서대로 정리하기");
+        System.out.println("3. 현재 날짜로부터 남은 유통기한 계산하기");
+        int choice = scanner.nextInt();
+        scanner.nextLine();
+
+        System.out.println("--------------------------");
+
+        switch (choice) {
+            case 1:
+                System.out.print("유통기한을 알고싶은 식료품을 입력하세요: ");
+                String userInput = scanner.nextLine();
+
+                // 사용자 입력과 일치하는 데이터 출력
+                if (map.containsKey(userInput)) {
+                    System.out.println(userInput + " = " + map.get(userInput) + " 입니다.");
+                } else {
+                    System.out.println(userInput + "는(은) 없습니다.");
+                }
+                break;
+
+            case 2:
+                // 값을 기준으로 내림차순으로 정렬하여 데이터 출력
+                System.out.println("유통기한이 긴 순서대로 정리했습니다^^");
+                List<Map.Entry<String, LocalDate>> list = new ArrayList<>(map.entrySet());
+                Collections.sort(list, new Comparator<Map.Entry<String, LocalDate>>() {
+                    @Override
+                    public int compare(Map.Entry<String, LocalDate> e1, Map.Entry<String, LocalDate> e2) {
+                        return e2.getValue().compareTo(e1.getValue());
+                    }
+                });
+
+                for (Map.Entry<String, LocalDate> entry : list) {
+                    System.out.println(entry.getKey() + ": " + entry.getValue().format(formatter));
+                }
+                break;
+
+            case 3:
+                LocalDate currentDate = LocalDate.now();
+                System.out.println("현재 날짜로부터 남은 유통기한을 계산했습니다!");
+
+                for (Map.Entry<String, LocalDate> entry : map.entrySet()) {
+                    LocalDate expiryDate = entry.getValue();
+                    if (currentDate.isAfter(expiryDate)) {
+                        System.out.println(entry.getKey() + ": 유통기한이 지났습니다ㅜ^ㅜ");
+                    } else {
+                        int daysLeft = (int) java.time.temporal.ChronoUnit.DAYS.between(currentDate, expiryDate);
+                        System.out.println(entry.getKey() + ": " + daysLeft + "일 남았습니다.");
+                    }
+                }
+                break;
+
+            default:
+                System.out.println("잘못된 선택입니다.");
+                break;
+        }
+
+        System.out.println("--------------------------");
+
+        Map.Entry<String, LocalDate> firstEntry = map.firstEntry();
+        System.out.println(firstEntry.getKey() + " - " + firstEntry.getValue().format(formatter));
+
+        Map.Entry<String, LocalDate> lastEntry = map.lastEntry();
+        System.out.println(lastEntry.getKey() + " - " + lastEntry.getValue().format(formatter));
+    }
+
+    private static void printAll(Set<Map.Entry<String, LocalDate>> map) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        for (Map.Entry<String, LocalDate> entry : map) {
+            System.out.println(entry.getKey() + " - " + entry.getValue().format(formatter));
+        }
+    }
+}
