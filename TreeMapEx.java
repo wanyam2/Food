@@ -28,7 +28,6 @@ public class TreeMapEx {
             LocalDate expiryDate = LocalDate.parse(expiryDateString, formatter);
             map.put(foodName, expiryDate);
 
-            break;
         }
 
         // 식료품을 삭제하는 기능
@@ -47,7 +46,6 @@ public class TreeMapEx {
                 System.out.println(removeFood + "는(은) 목록에 없습니다 🙅‍♀️");
             }
 
-            break;
         }
 
         System.out.println("원하는 옵션을 골라주세요!");
